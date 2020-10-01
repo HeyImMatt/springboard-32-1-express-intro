@@ -29,8 +29,32 @@ function findMedian(arr) {
   return arr.length % 2 !== 0 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2;
 }
 
+function createFrequencyCounter(arr) {
+  return arr.reduce(function(acc, next) {
+    acc[next] = (acc[next] || 0) + 1;
+    return acc;
+  }, {});
+}
+
+function findMode(arr) {
+  let freqCounter = createFrequencyCounter(arr);
+
+  let count = 0;
+  let mostFrequent;
+
+  for (let key in freqCounter) {
+    if (freqCounter[key] > count) {
+      mostFrequent = key;
+      count = freqCounter[key];
+    }
+  }
+
+  return +mostFrequent;
+}
+
 module.exports = {
   validateAndReturnNumsArray,
   findMean,
   findMedian,
+  findMode
 }
