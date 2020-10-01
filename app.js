@@ -1,5 +1,6 @@
 const express = require('express');
 const ExpressError = require('./errorClass');
+const { validateAndReturnNumsArray, findMean } = require('./helpers');
 
 const app = express();
 
@@ -8,22 +9,8 @@ app.use(express.json());
 app.get('/mean', function(req, res, next) {
   const operation = 'mean';
   try {
-    if (!req.query.nums) {
-      throw new ExpressError('Nums required', 400);
-    }
-    const nums = req.query.nums.split(',').map((n) => {
-      if (!parseInt(n)) {
-        throw new ExpressError(`${n} is not a number`, 400)
-      };
-      return parseInt(n);
-    });
-    const value = nums.reduce((acc, n, i) => {
-      if (i === nums.length - 1) {
-        acc += parseInt(n);
-        return acc / nums.length;
-      }
-      return acc += parseInt(n);
-    }, 0)
+    const nums = validateAndReturnNumsArray(req.query.nums)
+    const value = findMean(nums);
     return res.json({operation, value});
   } catch(e) {
     return next(e);
